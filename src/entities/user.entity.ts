@@ -26,6 +26,9 @@ export class User {
   @Column({ nullable: false, default: 1000000 })
   remainingPoint: number;
 
+  @Column({ nullable: false })
+  phoneNumber: string;
+
   @Column({ nullable: false, default: false })
   isAdmin: boolean;
 
