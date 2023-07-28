@@ -5,11 +5,13 @@ import {
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
+  Unique,
 } from "typeorm";
 import { Reservation } from "./reservation.entity";
 import { Point } from "./point.entity";
 
 @Entity()
+@Unique(["email"])
 export class User {
   @PrimaryGeneratedColumn({ type: "int" })
   id: number;
