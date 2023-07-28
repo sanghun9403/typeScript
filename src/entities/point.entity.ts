@@ -9,7 +9,7 @@ import {
 import { User } from "./user.entity";
 import { Reservation } from "./reservation.entity";
 
-@Entity()
+@Entity("points")
 export class Point {
   @PrimaryGeneratedColumn({ type: "int" })
   id: number;

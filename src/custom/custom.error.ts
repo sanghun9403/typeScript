@@ -1,9 +1,9 @@
 import { HttpException, HttpStatus } from "@nestjs/common";
 
 export class CustomError extends HttpException {
-  constructor(message: string, statusCode: HttpStatus) {
+  constructor(message: string, status: HttpStatus) {
     const stack = process.env.NODE_ENV === "development" ? new Error().stack : undefined;
-    super({ message, stack }, statusCode);
+    super({ message, stack }, status);
   }
 }
 

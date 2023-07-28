@@ -8,7 +8,7 @@ import {
 } from "typeorm";
 import { Seat } from "./seat.entity";
 
-@Entity()
+@Entity("concerts")
 export class Concert {
   @PrimaryGeneratedColumn({ type: "int" })
   id: number;

@@ -10,7 +10,7 @@ import {
 import { Reservation } from "./reservation.entity";
 import { Point } from "./point.entity";
 
-@Entity()
+@Entity("users")
 @Unique(["email"])
 export class User {
   @PrimaryGeneratedColumn({ type: "int" })
@@ -20,7 +20,7 @@ export class User {
   email: string;
 
   @Column({ nullable: false })
-  name: string;
+  nickname: string;
 
   @Column({ nullable: false })
   password: string;
@@ -30,6 +30,9 @@ export class User {
 
   @Column({ nullable: false })
   phoneNumber: string;
+
+  @Column()
+  profileImg: string;
 
   @Column({ nullable: false, default: false })
   isAdmin: boolean;

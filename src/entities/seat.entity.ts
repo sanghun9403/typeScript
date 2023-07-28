@@ -10,7 +10,7 @@ import {
 import { Concert } from "./concert.entity";
 import { Reservation } from "./reservation.entity";
 
-@Entity()
+@Entity("seats")
 export class Seat {
   @PrimaryGeneratedColumn({ type: "int" })
   id: number;

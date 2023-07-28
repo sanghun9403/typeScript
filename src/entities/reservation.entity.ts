@@ -10,7 +10,7 @@ import { User } from "../entities/user.entity";
 import { Point } from "./point.entity";
 import { Seat } from "./seat.entity";
 
-@Entity()
+@Entity("reservations")
 export class Reservation {
   @PrimaryGeneratedColumn({ type: "int" })
   id: number;
