@@ -11,7 +11,7 @@ import { Reservation } from "./reservation.entity";
 import { Point } from "./point.entity";
 
 @Entity("users")
-@Unique(["email"])
+// @Unique(["email"])
 export class User {
   @PrimaryGeneratedColumn({ type: "int" })
   id: number;

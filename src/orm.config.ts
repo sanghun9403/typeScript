@@ -4,7 +4,7 @@ import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 function ormConfig(): TypeOrmModuleOptions {
   const commonConf = {
     SYNCRONIZE: true,
-    ENTITIES: [__dirname + "/entities/*{.ts,.js}"],
+    ENTITIES: [__dirname + "/entities/*.entity{.ts,.js}"],
     MIGRATIONS: [__dirname + "/migrations/**/*{.ts,.js}"],
     MIGRATIONS_RUN: false,
   };

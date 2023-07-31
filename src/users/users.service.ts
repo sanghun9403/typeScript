@@ -1,4 +1,4 @@
-import { Injectable, HttpStatus } from "@nestjs/common";
+import { Injectable, HttpStatus, Res } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CreateUserDto } from "src/dtos/createUser.dto";
 import { User } from "src/entities/user.entity";
@@ -7,6 +7,7 @@ import { CustomError } from "src/custom/custom.error";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
 import { ConfigService } from "@nestjs/config";
+import { UpdateUserDto } from "src/dtos/updateUser.dto";
 
 @Injectable()
 export class UsersService {
@@ -19,12 +20,16 @@ export class UsersService {
   // 회원가입
   async signUp(createUserDto: CreateUserDto): Promise<User> {
     try {
-      const { email, password } = createUserDto;
+      const { email, password, confirmPassword } = createUserDto;
 
       const existInfo = await this.userRepository.findOne({ where: { email } });
 
       if (existInfo) {
         throw new CustomError("중복된 이메일입니다.", HttpStatus.CONFLICT);
+      }
+
+      if (password !== confirmPassword) {
+        throw new CustomError("비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST);
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -59,7 +64,7 @@ export class UsersService {
           userId: existUser.id,
         },
         this.configService.get<string>("JWT_SECRET_KEY"),
-        { expiresIn: "1h" }
+        { expiresIn: "10m" }
       );
 
       return token;
@@ -79,6 +84,49 @@ export class UsersService {
       if (!userDetail) {
         throw new CustomError("유저 정보가 없습니다", HttpStatus.NOT_FOUND);
       }
+
+      return userDetail;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+    try {
+      const { nickname, profileImg, password, afterPassword, afterConfirmPassword } = updateUserDto;
+      const userDetail = await this.userRepository.findOne({ where: { id } });
+      const match = await bcrypt.compare(password, userDetail.password);
+      const updateProfileImg = profileImg ? profileImg : userDetail.profileImg;
+
+      if (!match) {
+        throw new CustomError(
+          "유저 정보를 수정하려면 기존 비밀번호를 입력해 주세요.",
+          HttpStatus.NOT_FOUND
+        );
+      }
+
+      if (afterPassword !== "") {
+        if (afterPassword === afterConfirmPassword) {
+          const email = userDetail.email.split("@")[0];
+          if (email.includes(afterPassword)) {
+            throw new CustomError(
+              "비밀번호는 이메일과 같은 값이 포함될 수 없습니다.",
+              HttpStatus.BAD_REQUEST
+            );
+          } else {
+            const updatePassword = await bcrypt.hash(afterPassword, 10);
+            userDetail.password = updatePassword;
+          }
+        } else {
+          throw new CustomError("비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST);
+        }
+      }
+
+      if (updateProfileImg) {
+        userDetail.profileImg = updateProfileImg;
+      }
+
+      await this.userRepository.save(userDetail);
 
       return userDetail;
     } catch (err) {
