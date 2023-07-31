@@ -5,11 +5,14 @@ import {
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
+  Unique,
 } from "typeorm";
 import { Reservation } from "./reservation.entity";
 import { Point } from "./point.entity";
+import { Concert } from "./concert.entity";
 
-@Entity()
+@Entity("users")
+// @Unique(["email"])
 export class User {
   @PrimaryGeneratedColumn({ type: "int" })
   id: number;
@@ -18,7 +21,7 @@ export class User {
   email: string;
 
   @Column({ nullable: false })
-  name: string;
+  nickname: string;
 
   @Column({ nullable: false })
   password: string;
@@ -29,13 +32,23 @@ export class User {
   @Column({ nullable: false })
   phoneNumber: string;
 
+  @Column()
+  profileImg: string;
+
   @Column({ nullable: false, default: false })
   isAdmin: boolean;
 
-  @CreateDateColumn()
+  @CreateDateColumn({
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP(6)",
+  })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP(6)",
+    onUpdate: "CURRENT_TIMESTAMP(6)",
+  })
   updatedAt: Date;
 
   @OneToMany(() => Reservation, (reservation) => reservation.user, {
@@ -44,7 +57,14 @@ export class User {
   reservations: Reservation[];
 
   @OneToMany(() => Point, (point) => point.user, {
+    eager: true,
     cascade: true,
   })
   points: Point[];
+
+  @OneToMany(() => Concert, (concert) => concert.user, {
+    eager: true,
+    cascade: true,
+  })
+  concerts: Concert[];
 }
