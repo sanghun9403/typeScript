@@ -27,9 +27,8 @@ export class ConcertController {
     @Res() res: Response
   ) {
     try {
-      const concertImage = req.file ? req.file.locaiton : null;
+      const concertImage = req.file ? req.file.location : null;
       const { isAdmin, userId } = req.user;
-      console.log(isAdmin, userId);
 
       if (!isAdmin) {
         return res.status(HttpStatus.FORBIDDEN).json({ message: "공연등록 권한이 없습니다." });
