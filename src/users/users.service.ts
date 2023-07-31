@@ -1,4 +1,4 @@
-import { Injectable, HttpStatus, Res } from "@nestjs/common";
+import { Injectable, HttpStatus } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CreateUserDto } from "src/dtos/createUser.dto";
 import { User } from "src/entities/user.entity";
@@ -62,6 +62,7 @@ export class UsersService {
       const token = jwt.sign(
         {
           userId: existUser.id,
+          isAdmin: existUser.isAdmin,
         },
         this.configService.get<string>("JWT_SECRET_KEY"),
         { expiresIn: "10m" }

@@ -1,24 +1,18 @@
 import {
-  Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { User } from "./user.entity";
 import { Reservation } from "./reservation.entity";
+import { Seat } from "./seat.entity";
 
-@Entity("points")
-export class Point {
+@Entity("reservation_details")
+export class ReservationDetail {
   @PrimaryGeneratedColumn({ type: "int" })
   id: number;
-
-  @Column({ type: "int", nullable: false })
-  point: number;
-
-  @Column()
-  status: string;
 
   @CreateDateColumn({
     type: "timestamp",
@@ -33,14 +27,15 @@ export class Point {
   })
   updatedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.points, {
+  @ManyToOne(() => Reservation, (reservation) => reservation.reservationDetails, {
     onDelete: "CASCADE",
     nullable: false,
   })
-  user: User;
+  reservation: Reservation;
 
-  @ManyToOne(() => Reservation, (reservation) => reservation.points, {
+  @OneToOne(() => Seat, (seat) => seat.reservationDetail, {
+    onDelete: "CASCADE",
     nullable: false,
   })
-  reservation: Reservation;
+  seat: Seat;
 }

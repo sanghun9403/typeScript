@@ -75,7 +75,7 @@ export class UsersController {
     @Res() res: Response
   ) {
     try {
-      const userId = req.user;
+      const { userId } = req.user;
 
       if (userId != id) {
         throw new CustomError("수정권한이 없습니다.", HttpStatus.UNAUTHORIZED);

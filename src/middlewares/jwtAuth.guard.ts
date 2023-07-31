@@ -25,7 +25,9 @@ export class JwtAuthGuard implements CanActivate {
     try {
       const decodedToken = this.jwtService.verify(token);
       const userId = decodedToken.userId;
-      request.user = userId;
+      const isAdmin = decodedToken.isAdmin;
+
+      request.user = { userId, isAdmin };
       return true;
     } catch (error) {
       if (error.name === "TokenExpiredError") {

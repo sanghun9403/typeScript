@@ -1,4 +1,5 @@
 import {
+  Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
@@ -8,17 +9,27 @@ import {
 } from "typeorm";
 import { User } from "../entities/user.entity";
 import { Point } from "./point.entity";
-import { Seat } from "./seat.entity";
+import { ReservationDetail } from "./reservationDetail.entity";
 
 @Entity("reservations")
 export class Reservation {
   @PrimaryGeneratedColumn({ type: "int" })
   id: number;
 
-  @CreateDateColumn()
+  @Column()
+  totalPrice: number;
+
+  @CreateDateColumn({
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP(6)",
+  })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP(6)",
+    onUpdate: "CURRENT_TIMESTAMP(6)",
+  })
   updatedAt: Date;
 
   @ManyToOne(() => User, (user) => user.reservations, {
@@ -27,14 +38,16 @@ export class Reservation {
   })
   user: User;
 
-  @OneToMany(() => Seat, (seat) => seat.reservations, {
-    onDelete: "CASCADE",
-    nullable: false,
-  })
-  seat: Seat;
-
   @OneToMany(() => Point, (point) => point.reservation, {
+    eager: true,
     nullable: false,
   })
   points: Point[];
+
+  @OneToMany(() => ReservationDetail, (detail) => detail.reservation, {
+    eager: true,
+    cascade: true,
+    nullable: false,
+  })
+  reservationDetails: ReservationDetail[];
 }
