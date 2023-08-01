@@ -47,37 +47,21 @@ export class ConcertService {
   // 공연전체조회
   async getConcertsInfo(): Promise<Concert[]> {
     try {
-      const getConcert = await this.concertRepository.find({});
+      const getConcert = await this.concertRepository.find({
+        select: [
+          "id",
+          "title",
+          "concertImage",
+          "description",
+          "concertTime",
+          "concertCategory",
+          "location",
+          "maxSeats",
+          "seats",
+        ],
+      });
 
-      const concertSeatInfos = [];
-      for (const concert of getConcert) {
-        const availableSeats = await this.seatService.checkSeatStatus(concert.id);
-        const seatInfos = [
-          { grade: "S", availableSeats: 0, price: 30000 },
-          { grade: "A", availableSeats: 0, price: 20000 },
-          { grade: "B", availableSeats: 0, price: 10000 },
-        ];
-
-        for (const seat of availableSeats) {
-          if (seat.grade === "S") seatInfos[0].availableSeats++;
-          else if (seat.grade === "A") seatInfos[1].availableSeats++;
-          else if (seat.grade === "B") seatInfos[2].availableSeats++;
-        }
-
-        concertSeatInfos.push({
-          id: concert.id,
-          title: concert.title,
-          concertImage: concert.concertImage,
-          description: concert.description,
-          concertTime: concert.concertTime,
-          concertCategory: concert.concertCategory,
-          location: concert.location,
-          maxSeats: concert.maxSeats,
-          seatInfos,
-        });
-      }
-
-      return concertSeatInfos;
+      return getConcert;
     } catch (err) {
       throw err;
     }
