@@ -9,9 +9,10 @@ import {
   HttpStatus,
   Get,
   Query,
+  Param,
 } from "@nestjs/common";
 import { Response, Request } from "express";
-import { ConcertService } from "./concert.service";
+import { ConcertService } from "./concerts.service";
 import { JwtAuthGuard } from "src/middlewares/jwtAuth.guard";
 import { CreateConcertDto } from "src/dtos/createConcert.dto";
 
@@ -41,16 +42,14 @@ export class ConcertController {
       });
       res.status(HttpStatus.CREATED).json({ message: "공연등록이 완료되었습니다." });
     } catch (err) {
-      res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ message: "공연 등록 중 오류가 발생했습니다." });
+      throw err;
     }
   }
 
   @Get()
-  async getConcertInfo(@Res() res: Response) {
+  async getConcerts(@Res() res: Response) {
     try {
-      const concertInfo = await this.concertService.getConcertInfo();
+      const concertInfo = await this.concertService.getConcertsInfo();
 
       if (!concertInfo) {
         return res.status(HttpStatus.NOT_FOUND).json("등록된 공연이 없습니다.");
@@ -72,6 +71,21 @@ export class ConcertController {
       }
 
       res.status(HttpStatus.OK).json({ concerts });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @Get(":id")
+  async getConcertDetail(@Param("id") id: number, @Res() res: Response) {
+    try {
+      const concertDetail = await this.concertService.getConcertDetail(id);
+
+      if (!concertDetail) {
+        return res.status(HttpStatus.NOT_FOUND).json("등록된 공연이 없습니다.");
+      }
+
+      res.status(HttpStatus.OK).json(concertDetail);
     } catch (err) {
       throw err;
     }

@@ -8,7 +8,8 @@ import { UsersModule } from "./users/users.module";
 // import { APP_FILTER } from "@nestjs/core";
 // import { GlobalExceptionFilter } from "./custom/exceptionFilter";
 // { provide: APP_FILTER, useClass: GlobalExceptionFilter }
-import { ConcertModule } from "./concert/concert.module";
+import { ConcertModule } from "./concerts/concerts.module";
+import { SeatsModule } from './seats/seats.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ConcertModule } from "./concert/concert.module";
     TypeOrmModule.forRootAsync({ useFactory: ormConfig }),
     UsersModule,
     ConcertModule,
+    SeatsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -9,6 +9,7 @@ import {
 } from "typeorm";
 import { Seat } from "./seat.entity";
 import { User } from "./user.entity";
+import { Reservation } from "./reservation.entity";
 
 @Entity("concerts")
 export class Concert {
@@ -50,10 +51,14 @@ export class Concert {
   updatedAt: Date;
 
   @OneToMany(() => Seat, (seat) => seat.concert, {
-    eager: true,
     cascade: true,
   })
   seats: Seat[];
+
+  @OneToMany(() => Reservation, (reservation) => reservation.concert, {
+    cascade: true,
+  })
+  reservations: Reservation[];
 
   @ManyToOne(() => User, (user) => user.concerts, {
     onDelete: "CASCADE",
