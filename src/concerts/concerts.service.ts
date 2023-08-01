@@ -3,19 +3,21 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { CustomError } from "src/custom/custom.error";
 import { CreateConcertDto } from "src/dtos/createConcert.dto";
 import { Concert } from "src/entities/concert.entity";
+import { SeatsService } from "src/seats/seats.service";
 import { Like, Repository } from "typeorm";
 
 @Injectable()
 export class ConcertService {
   constructor(
     @InjectRepository(Concert)
-    private readonly concertRepository: Repository<Concert>
+    private readonly concertRepository: Repository<Concert>,
+    private readonly seatService: SeatsService
   ) {}
 
   // 공연등록
   async createConcert(createConcertDto: CreateConcertDto): Promise<Concert> {
     try {
-      const { title, concertTime, location, userId } = createConcertDto;
+      const { title, concertTime, location, userId, maxSeats } = createConcertDto;
 
       const existInfo = await this.concertRepository.findOne({
         where: [{ title, concertTime, location }],
@@ -32,14 +34,18 @@ export class ConcertService {
         ...createConcertDto,
         user: { id: userId },
       });
-      return this.concertRepository.save(newConcert);
+
+      const savedConcert = await this.concertRepository.save(newConcert);
+      await this.seatService.createSeats(savedConcert, maxSeats);
+
+      return savedConcert;
     } catch (err) {
       throw err;
     }
   }
 
   // 공연전체조회
-  async getConcertInfo(): Promise<Concert[]> {
+  async getConcertsInfo(): Promise<Concert[]> {
     try {
       const getConcert = await this.concertRepository.find({
         select: [
@@ -75,9 +81,12 @@ export class ConcertService {
           "concertCategory",
           "location",
           "maxSeats",
-          "seats",
         ],
       });
+
+      if (!concerts) {
+        throw new CustomError("검색 결과가 없습니다.", HttpStatus.NOT_FOUND);
+      }
 
       return concerts;
     } catch (err) {
@@ -86,4 +95,43 @@ export class ConcertService {
   }
 
   // 공연 상세검색
+  async getConcertDetail(id: number) {
+    try {
+      const getConcert = await this.concertRepository.findOne({
+        where: { id },
+        select: [
+          "id",
+          "title",
+          "concertImage",
+          "description",
+          "concertTime",
+          "concertCategory",
+          "location",
+          "maxSeats",
+        ],
+      });
+
+      const concertSeatInfos = [];
+      const availableSeats = await this.seatService.checkSeatStatus(getConcert.id);
+      const seatInfos = [
+        { grade: "S", availableSeats: 0, price: 30000 },
+        { grade: "A", availableSeats: 0, price: 20000 },
+        { grade: "B", availableSeats: 0, price: 10000 },
+      ];
+
+      for (const seat of availableSeats) {
+        if (seat.grade === "S") seatInfos[0].availableSeats++;
+        else if (seat.grade === "A") seatInfos[1].availableSeats++;
+        else if (seat.grade === "B") seatInfos[2].availableSeats++;
+      }
+
+      concertSeatInfos.push({
+        seatInfos,
+      });
+
+      return { ...getConcert, concertSeatInfos };
+    } catch (err) {
+      throw err;
+    }
+  }
 }
