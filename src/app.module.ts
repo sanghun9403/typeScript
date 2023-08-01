@@ -10,6 +10,9 @@ import { UsersModule } from "./users/users.module";
 // { provide: APP_FILTER, useClass: GlobalExceptionFilter }
 import { ConcertModule } from "./concerts/concerts.module";
 import { SeatsModule } from './seats/seats.module';
+import { ReservationsModule } from './reservations/reservations.module';
+import { PointsModule } from './points/points.module';
+import { ReservationDetailsModule } from './reservation-details/reservation-details.module';
 
 @Module({
   imports: [
@@ -18,6 +21,9 @@ import { SeatsModule } from './seats/seats.module';
     UsersModule,
     ConcertModule,
     SeatsModule,
+    ReservationsModule,
+    PointsModule,
+    ReservationDetailsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

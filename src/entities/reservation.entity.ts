@@ -9,7 +9,7 @@ import {
 } from "typeorm";
 import { User } from "../entities/user.entity";
 import { Point } from "./point.entity";
-import { ReservationDetail } from "./reservationDetail.entity";
+import { ReservationDetail } from "./reservation-detail.entity";
 import { Concert } from "./concert.entity";
 
 @Entity("reservations")
@@ -41,9 +41,9 @@ export class Reservation {
 
   @ManyToOne(() => Concert, (concert) => concert.reservations, {
     onDelete: "CASCADE",
-    nullable : false
+    nullable: false,
   })
-  concert : Concert
+  concert: Concert;
 
   @OneToMany(() => Point, (point) => point.reservation, {
     eager: true,

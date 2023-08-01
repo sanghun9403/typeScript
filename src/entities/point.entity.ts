@@ -17,8 +17,8 @@ export class Point {
   @Column({ type: "int", nullable: false })
   point: number;
 
-  @Column()
-  status: string;
+  @Column({ type: "boolean", default: true })
+  status: boolean;
 
   @CreateDateColumn({
     type: "timestamp",

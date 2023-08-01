@@ -1,7 +1,7 @@
 import { HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CustomError } from "src/custom/custom.error";
-import { CreateConcertDto } from "src/dtos/createConcert.dto";
+import { CreateConcertDto } from "src/dtos/create-concert.dto";
 import { Concert } from "src/entities/concert.entity";
 import { SeatsService } from "src/seats/seats.service";
 import { Like, Repository } from "typeorm";
@@ -84,10 +84,6 @@ export class ConcertService {
         ],
       });
 
-      if (!concerts) {
-        throw new CustomError("검색 결과가 없습니다.", HttpStatus.NOT_FOUND);
-      }
-
       return concerts;
     } catch (err) {
       throw err;
@@ -111,11 +107,10 @@ export class ConcertService {
         ],
       });
 
-      const concertSeatInfos = [];
       const availableSeats = await this.seatService.checkSeatStatus(getConcert.id);
       const seatInfos = [
-        { grade: "S", availableSeats: 0, price: 30000 },
-        { grade: "A", availableSeats: 0, price: 20000 },
+        { grade: "S", availableSeats: 0, price: 50000 },
+        { grade: "A", availableSeats: 0, price: 30000 },
         { grade: "B", availableSeats: 0, price: 10000 },
       ];
 
@@ -125,11 +120,7 @@ export class ConcertService {
         else if (seat.grade === "B") seatInfos[2].availableSeats++;
       }
 
-      concertSeatInfos.push({
-        seatInfos,
-      });
-
-      return { ...getConcert, concertSeatInfos };
+      return { ...getConcert, seatInfos };
     } catch (err) {
       throw err;
     }

@@ -13,10 +13,10 @@ import {
 } from "@nestjs/common";
 import { Response, Request } from "express";
 import { UsersService } from "./users.service";
-import { CreateUserDto } from "src/dtos/createUser.dto";
+import { CreateUserDto } from "src/dtos/create-user.dto";
 import { LoginDto } from "src/dtos/login.dto";
-import { JwtAuthGuard } from "src/middlewares/jwtAuth.guard";
-import { UpdateUserDto } from "src/dtos/updateUser.dto";
+import { JwtAuthGuard } from "src/middlewares/jwt-auth.guard";
+import { UpdateUserDto } from "src/dtos/update-user.dto";
 import { CustomError } from "src/custom/custom.error";
 
 @Controller()

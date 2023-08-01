@@ -2,7 +2,6 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
@@ -33,7 +32,7 @@ export class ReservationDetail {
   })
   reservation: Reservation;
 
-  @OneToOne(() => Seat, (seat) => seat.reservationDetail, {
+  @ManyToOne(() => Seat, (seat) => seat.reservationDetails, {
     onDelete: "CASCADE",
     nullable: false,
   })
