@@ -13,8 +13,8 @@ import {
 } from "@nestjs/common";
 import { Response, Request } from "express";
 import { ConcertService } from "./concerts.service";
-import { JwtAuthGuard } from "src/middlewares/jwtAuth.guard";
-import { CreateConcertDto } from "src/dtos/createConcert.dto";
+import { JwtAuthGuard } from "src/middlewares/jwt-auth.guard";
+import { CreateConcertDto } from "src/dtos/create-concert.dto";
 
 @Controller("concerts")
 export class ConcertController {

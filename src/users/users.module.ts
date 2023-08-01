@@ -5,7 +5,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "src/entities/user.entity";
 import { JwtModule } from "@nestjs/jwt";
 import { ConfigModule } from "@nestjs/config";
-import { UploadMiddleware } from "src/middlewares/uploadMiddelware";
+import { UploadMiddleware } from "src/middlewares/upload-middelware";
 
 @Module({
   imports: [

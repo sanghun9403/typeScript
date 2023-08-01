@@ -4,12 +4,11 @@ import {
   Entity,
   ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { Concert } from "./concert.entity";
-import { ReservationDetail } from "./reservationDetail.entity";
+import { ReservationDetail } from "./reservation-detail.entity";
 
 @Entity("seats")
 export class Seat {
@@ -46,9 +45,9 @@ export class Seat {
   })
   concert: Concert;
 
-  @OneToOne(() => ReservationDetail, (detail) => detail.seat, {
+  @OneToMany(() => ReservationDetail, (detail) => detail.seat, {
     onDelete: "CASCADE",
     nullable: false,
   })
-  reservationDetail: ReservationDetail;
+  reservationDetails: ReservationDetail[];
 }
