@@ -67,6 +67,7 @@ export class SeatsService {
     await this.seatRepository.update({ id }, { status });
   }
 
+  // 유효한 좌석 검사
   async validateSeat(id: number, grade: string, price: number, status: boolean): Promise<boolean> {
     const seat = await this.seatRepository.findOne({ where: { id } });
     if (!seat || seat.grade !== grade || seat.price !== price || seat.status !== status) {

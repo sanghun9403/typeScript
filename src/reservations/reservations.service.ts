@@ -95,6 +95,7 @@ export class ReservationsService {
             seat: { id: seat.id },
           });
         });
+        console.log(reservationDetail);
         await transactionalEntityManager.save(reservationDetail);
 
         return newReservation;
