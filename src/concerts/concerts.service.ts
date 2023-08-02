@@ -16,30 +16,31 @@ export class ConcertService {
 
   // 공연등록
   async createConcert(createConcertDto: CreateConcertDto): Promise<Concert> {
+    const { title, concertTime, location, userId, maxSeats } = createConcertDto;
+
+    const existInfo = await this.concertRepository.findOne({
+      where: [{ title, concertTime, location }],
+    });
+
+    if (existInfo) {
+      throw new CustomError(
+        "동일한 장소 및 시간의 콘서트는 등록할 수 없습니다.",
+        HttpStatus.BAD_REQUEST
+      );
+    }
+
+    const newConcert = this.concertRepository.create({
+      ...createConcertDto,
+      user: { id: userId },
+    });
+
+    const savedConcert = await this.concertRepository.save(newConcert);
     try {
-      const { title, concertTime, location, userId, maxSeats } = createConcertDto;
-
-      const existInfo = await this.concertRepository.findOne({
-        where: [{ title, concertTime, location }],
-      });
-
-      if (existInfo) {
-        throw new CustomError(
-          "동일한 장소 및 시간의 콘서트는 등록할 수 없습니다.",
-          HttpStatus.BAD_REQUEST
-        );
-      }
-
-      const newConcert = this.concertRepository.create({
-        ...createConcertDto,
-        user: { id: userId },
-      });
-
-      const savedConcert = await this.concertRepository.save(newConcert);
       await this.seatService.createSeats(savedConcert, maxSeats);
 
       return savedConcert;
     } catch (err) {
+      await this.concertRepository.delete(savedConcert.id);
       throw err;
     }
   }
