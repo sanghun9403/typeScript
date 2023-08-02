@@ -46,7 +46,7 @@ export class Seat {
   concert: Concert;
 
   @OneToMany(() => ReservationDetail, (detail) => detail.seat, {
-    eager: true,
+    // eager: true,
     onDelete: "CASCADE",
     nullable: false,
   })

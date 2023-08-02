@@ -88,4 +88,10 @@ export class UsersController {
       throw err;
     }
   }
+
+  @Get("user/:id/reservations")
+  @UseGuards(JwtAuthGuard)
+  async getUserReservationDetails(@Param("id") id: number) {
+    return this.userService.getUserReservationDetails(id);
+  }
 }

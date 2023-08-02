@@ -134,4 +134,20 @@ export class UsersService {
       throw err;
     }
   }
+
+  // 내예약내역 조회
+  async getUserReservationDetails(id: number): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ["reservations"],
+    });
+
+    if (!user) {
+      throw new CustomError("사용자 정보를 찾을 수 없습니다", HttpStatus.NOT_FOUND);
+    }
+
+    user.reservations.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+    return user;
+  }
 }

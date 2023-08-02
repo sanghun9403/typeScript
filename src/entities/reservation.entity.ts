@@ -20,6 +20,9 @@ export class Reservation {
   @Column()
   totalPrice: number;
 
+  @Column({ nullable: false, default: true })
+  status: boolean;
+
   @CreateDateColumn({
     type: "timestamp",
     default: () => "CURRENT_TIMESTAMP(6)",
@@ -46,13 +49,13 @@ export class Reservation {
   concert: Concert;
 
   @OneToMany(() => Point, (point) => point.reservation, {
-    eager: true,
+    // eager: true,
     nullable: false,
   })
   points: Point[];
 
   @OneToMany(() => ReservationDetail, (detail) => detail.reservation, {
-    eager: true,
+    // eager: true,
     cascade: true,
     nullable: false,
   })

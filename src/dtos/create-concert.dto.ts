@@ -1,4 +1,4 @@
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty, MinDate } from "class-validator";
 
 export class CreateConcertDto {
   @IsNotEmpty({ message: "공연제목은 필수입력 사항입니다." })

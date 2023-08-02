@@ -9,10 +9,10 @@ import { UsersModule } from "./users/users.module";
 // import { GlobalExceptionFilter } from "./custom/exceptionFilter";
 // { provide: APP_FILTER, useClass: GlobalExceptionFilter }
 import { ConcertModule } from "./concerts/concerts.module";
-import { SeatsModule } from './seats/seats.module';
-import { ReservationsModule } from './reservations/reservations.module';
-import { PointsModule } from './points/points.module';
-import { ReservationDetailsModule } from './reservation-details/reservation-details.module';
+import { SeatsModule } from "./seats/seats.module";
+import { ReservationsModule } from "./reservations/reservations.module";
+import { PointsModule } from "./points/points.module";
+// import { ReservationDetailsModule } from './reservation-details/reservation-details.module';
 
 @Module({
   imports: [
@@ -23,7 +23,7 @@ import { ReservationDetailsModule } from './reservation-details/reservation-deta
     SeatsModule,
     ReservationsModule,
     PointsModule,
-    ReservationDetailsModule,
+    // ReservationDetailsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

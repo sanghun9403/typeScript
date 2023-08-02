@@ -6,6 +6,7 @@ import { Concert } from "src/entities/concert.entity";
 import { Point } from "src/entities/point.entity";
 import { ReservationDetail } from "src/entities/reservation-detail.entity";
 import { Reservation } from "src/entities/reservation.entity";
+import { Seat } from "src/entities/seat.entity";
 import { User } from "src/entities/user.entity";
 import { SeatsService } from "src/seats/seats.service";
 import { EntityManager, Repository } from "typeorm";
@@ -106,12 +107,19 @@ export class ReservationsService {
   }
 
   // 예약취소
-  async cancelReservation(id: number) {
-    const reservation = await this.reservationRepository.findOne({ where: { id } });
+  async cancelReservation(userId: number, id: number) {
+    const reservation = await this.reservationRepository.findOne({
+      where: { id, user: { id: userId } },
+      relations: ["user", "concert", "reservationDetails.seat"],
+    });
     const entityManager = this.reservationRepository.manager;
-
-    if (!reservation) {
+    console.log(reservation.user.id, userId);
+    if (!reservation.user || reservation.user.id !== userId) {
+      throw new CustomError("예약 취소 권한이 없습니다.", HttpStatus.UNAUTHORIZED);
+    } else if (!reservation) {
       throw new CustomError("예약 정보가 없습니다.", HttpStatus.NOT_FOUND);
+    } else if (!reservation.status) {
+      throw new CustomError("이미 취소된 예약입니다.", HttpStatus.BAD_REQUEST);
     }
 
     const currentTime = new Date();
@@ -126,14 +134,53 @@ export class ReservationsService {
     }
 
     await entityManager.transaction(async (transactionalEntityManager: EntityManager) => {
+      // 유저 포인트 환불
       const user = reservation.user;
       const refundPoint = reservation.totalPrice;
       user.remainingPoint += refundPoint;
       await transactionalEntityManager.save(user);
 
-      // for (const seat of reservation.selectedSeats) {
-      //   await this.seatService.updateSeatStatus(seat.id, false);
-      // }
+      // 포인트 사용 내역의 상태 수정
+      const pointHistory = await transactionalEntityManager.findOne(Point, {
+        where: { reservation: { id: id } },
+      });
+      if (pointHistory) {
+        pointHistory.status = false;
+        await transactionalEntityManager.save(pointHistory);
+      }
+
+      // 좌석 상태 변경
+      for (const reservationDetail of reservation.reservationDetails) {
+        console.log(reservationDetail);
+        const seat = await transactionalEntityManager.findOne(Seat, {
+          where: { id: reservationDetail.seat.id },
+        });
+        if (seat && seat.status) {
+          seat.status = false;
+          await transactionalEntityManager.save(seat);
+        }
+      }
+
+      reservation.status = false;
+      await transactionalEntityManager.save(reservation);
     });
+  }
+
+  async getReservationDetails(
+    id: number
+  ): Promise<{ concertTitle: string; reservationDetails: ReservationDetail[] }> {
+    const reservation = await this.reservationRepository.findOne({
+      where: { id },
+      relations: ["concert", "reservationDetails", "reservationDetails.seat"],
+    });
+
+    if (!reservation) {
+      throw new CustomError("예약 정보를 찾을 수 없습니다", HttpStatus.NOT_FOUND);
+    }
+
+    return {
+      concertTitle: reservation.concert.title,
+      reservationDetails: reservation.reservationDetails,
+    };
   }
 }
