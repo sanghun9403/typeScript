@@ -58,7 +58,7 @@ export class SeatsService {
     return seatPrice[grade];
   }
 
-  // 좌석상태 체크
+  // 예약가능 좌석상태 체크
   async checkSeatStatus(concertId: number): Promise<Seat[]> {
     const seats = await this.seatRepository.find({
       where: { concert: { id: concertId }, status: false },

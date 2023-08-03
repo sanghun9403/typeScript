@@ -10,8 +10,8 @@ import { Like, Repository } from "typeorm";
 export class ConcertService {
   constructor(
     @InjectRepository(Concert)
-    private readonly concertRepository: Repository<Concert>,
-    private readonly seatService: SeatsService
+    private concertRepository: Repository<Concert>,
+    private seatService: SeatsService
   ) {}
 
   // 공연등록
@@ -60,6 +60,7 @@ export class ConcertService {
           "maxSeats",
           "seats",
         ],
+        order: { createdAt: "DESC" },
       });
 
       return getConcert;
@@ -83,6 +84,7 @@ export class ConcertService {
           "location",
           "maxSeats",
         ],
+        order: { createdAt: "DESC" },
       });
 
       return concerts;
