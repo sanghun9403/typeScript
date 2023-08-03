@@ -57,13 +57,13 @@ export class User {
   reservations: Reservation[];
 
   @OneToMany(() => Point, (point) => point.user, {
-    eager: true,
+    // eager: true,
     cascade: true,
   })
   points: Point[];
 
   @OneToMany(() => Concert, (concert) => concert.user, {
-    eager: true,
+    // eager: true,
     cascade: true,
   })
   concerts: Concert[];

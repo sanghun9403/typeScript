@@ -13,8 +13,8 @@ import { UpdateUserDto } from "src/dtos/update-user.dto";
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-    private readonly configService: ConfigService
+    private userRepository: Repository<User>,
+    private configService: ConfigService
   ) {}
 
   // 회원가입
@@ -94,7 +94,7 @@ export class UsersService {
 
   async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     try {
-      const { nickname, profileImg, password, afterPassword, afterConfirmPassword } = updateUserDto;
+      const { profileImg, password, afterPassword, afterConfirmPassword } = updateUserDto;
       const userDetail = await this.userRepository.findOne({ where: { id } });
       const match = await bcrypt.compare(password, userDetail.password);
       const updateProfileImg = profileImg ? profileImg : userDetail.profileImg;
@@ -133,5 +133,21 @@ export class UsersService {
     } catch (err) {
       throw err;
     }
+  }
+
+  // 내예약내역 조회
+  async getUserReservationDetails(id: number): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ["reservations"],
+    });
+
+    if (!user) {
+      throw new CustomError("사용자 정보를 찾을 수 없습니다", HttpStatus.NOT_FOUND);
+    }
+
+    user.reservations.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+    return user;
   }
 }

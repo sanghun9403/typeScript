@@ -2,10 +2,6 @@ import { IsNotEmpty, IsString, Length } from "class-validator";
 
 export class UpdateUserDto {
   @IsString()
-  @Length(2, 10, { message: "닉네임은 2글자 이상 10글자 이하까지만 가능합니다." })
-  nickname: string;
-
-  @IsString()
   @Length(4, 20, { message: "비밀번호는 4자리 이상 20자리 이하까지만 가능합니다" })
   password: string;
 

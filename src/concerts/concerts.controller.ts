@@ -61,7 +61,7 @@ export class ConcertController {
     }
   }
 
-  @Get("/search")
+  @Post("/search")
   async getConcertByTitle(@Query("title") title: string, @Res() res: Response) {
     try {
       const concerts = await this.concertService.getConcertByTitle(title);
