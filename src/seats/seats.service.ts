@@ -20,7 +20,7 @@ export class SeatsService {
       // 좌석의 등급 비율을 2:3:5로 설정
       const seatRatio = { S: 2, A: 3, B: 5 };
 
-      const totalRatio = seatRatio.S + seatRatio.A + seatRatio.B; // 10
+      const totalRatio = seatRatio.S + seatRatio.A + seatRatio.B;
 
       // maxSeats에 따라 각 좌석의 개수 계산
       const ratioCaculate = {
