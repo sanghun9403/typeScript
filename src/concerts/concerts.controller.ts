@@ -51,10 +51,6 @@ export class ConcertController {
     try {
       const concertInfo = await this.concertService.getConcertsInfo();
 
-      if (!concertInfo) {
-        return res.status(HttpStatus.NOT_FOUND).json("등록된 공연이 없습니다.");
-      }
-
       res.status(HttpStatus.OK).json({ concertInfo });
     } catch (err) {
       throw err;
@@ -66,8 +62,8 @@ export class ConcertController {
     try {
       const concerts = await this.concertService.getConcertByTitle(title);
 
-      if (!concerts) {
-        return res.status(HttpStatus.NOT_FOUND).json("검색 결과가 없습니다.");
+      if (!title) {
+        return res.status(HttpStatus.BAD_REQUEST).json("검색키워드를 입력해주세요");
       }
 
       res.status(HttpStatus.OK).json({ concerts });
@@ -80,10 +76,6 @@ export class ConcertController {
   async getConcertDetail(@Param("id") id: number, @Res() res: Response) {
     try {
       const concertDetail = await this.concertService.getConcertDetail(id);
-
-      if (!concertDetail) {
-        return res.status(HttpStatus.NOT_FOUND).json("등록된 공연이 없습니다.");
-      }
 
       res.status(HttpStatus.OK).json(concertDetail);
     } catch (err) {

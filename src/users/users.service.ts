@@ -141,6 +141,7 @@ export class UsersService {
       where: { id },
       relations: ["reservations"],
     });
+    // 추후에 쿼리빌더 적용해서 컬럼을 제한해서 출력할 예정
 
     if (!user) {
       throw new CustomError("사용자 정보를 찾을 수 없습니다", HttpStatus.NOT_FOUND);
