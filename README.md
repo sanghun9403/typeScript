@@ -33,17 +33,16 @@
 
 ```javascript
 // concerts.service.ts 공연등록
-const savedConcert = await this.concertRepository.save(newConcert);
-try {
-  await this.seatService.createSeats(savedConcert, maxSeats);
+ const savedConcert = await this.concertRepository.save(newConcert);
+    try {
+      await this.seatService.createSeats(savedConcert, maxSeats);
 
-  return savedConcert;
-} catch (err) {
-  await this.concertRepository.delete(savedConcert.id);
-  throw err;
-}
+      return savedConcert;
+    } catch (err) {
+      await this.concertRepository.delete(savedConcert.id);
+      throw err;
+    }
 ```
-
 ```javascript
 // seats.service.ts 좌석생성
  async createSeats(concert: Concert, maxSeats: number) {
@@ -85,10 +84,8 @@ try {
     }
   }
 ```
-
 유저에게 입력받은 createConcertDto를 통해 좌석의 등급, 가격, 비율을 입력받아 트랜잭션을 통해 콘서트 등록 시 좌석을 자동 생성하는 것까지 구현했으나 아래의 현재 좌석의 예약가능 유무를 출력해주는 부분에서 어려움이 있었음. 시간을 투자하면 해결 가능 할 것으로 예상되지만 과제 제출까지 얼마 남지 않아 시간관계/작업 편의상 고정값을 넣어둠.  
 공연 등록 시 유저가 입력한 maxSeats의 수량을 토대로 설정해 둔 비율에 따라 좌석이 자동 생성되는 구조.
-
 ```javascript
 // concerts.service.ts 공연 상세 조회
 async getConcertDetail(id: number) {
@@ -126,7 +123,6 @@ async getConcertDetail(id: number) {
     }
   }
 ```
-
 ```javascript
 // 출력결과
 {
@@ -157,6 +153,5 @@ async getConcertDetail(id: number) {
   ]
 }
 ```
-
 이외에도 짜잘한 타입오류나 Nest.js를 처음 사용하다 보니 초기 세팅을 할 때 어려움이 많이 있었음.  
 SOLID원칙을 생각하면서 객체지향설계를 해보려 했으나 생각대로 잘 되지 않았고, 사실 Nest.js를 제대로 활용하지 못했다고 생각되어서 추가적인 공부가 필요할 것으로 보임.
