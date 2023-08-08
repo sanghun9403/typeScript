@@ -14,7 +14,6 @@ import { ReservationsService } from "./reservations.service";
 import { CreateReservationDto } from "src/dtos/create-reservation.dto";
 import { Response, Request } from "express";
 import { JwtAuthGuard } from "src/middlewares/jwt-auth.guard";
-import { ReservationDetail } from "src/entities/reservation-detail.entity";
 
 @Controller("reservation")
 export class ReservationsController {

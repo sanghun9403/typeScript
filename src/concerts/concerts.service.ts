@@ -87,6 +87,10 @@ export class ConcertService {
         order: { createdAt: "DESC" },
       });
 
+      if (!concerts.length) {
+        throw new CustomError("검색 결과가 없습니다.", HttpStatus.NOT_FOUND);
+      }
+
       return concerts;
     } catch (err) {
       throw err;
@@ -109,6 +113,10 @@ export class ConcertService {
           "maxSeats",
         ],
       });
+
+      if (!getConcert) {
+        throw new CustomError("등록된 공연이 없습니다.", HttpStatus.NOT_FOUND);
+      }
 
       const availableSeats = await this.seatService.checkSeatStatus(getConcert.id);
       const seatInfos = [

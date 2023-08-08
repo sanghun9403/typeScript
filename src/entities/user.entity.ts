@@ -32,7 +32,7 @@ export class User {
   @Column({ nullable: false })
   phoneNumber: string;
 
-  @Column()
+  @Column({ nullable: true })
   profileImg: string;
 
   @Column({ nullable: false, default: false })
